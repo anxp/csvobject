@@ -24,4 +24,6 @@ chain should be scalar and have standard type**:
 To make CsvObject available in your project, you can run the following command.
 Make sure to run this command inside your project, when you're using go modules 😉
 
->`go get github.com/anxp/csvobject`
+```sh 
+go get github.com/anxp/csvobject
+```
