@@ -1,4 +1,5 @@
 # CsvObject
+## 📖 Description
 CsvObject package allows to dump structured data to CSV ~~file~~ string, 
 and parses CSV data from string to slice of structures.
 
@@ -17,3 +18,9 @@ chain should be scalar and have standard type**:
 - float32
 - float64
 - bool
+
+## 📦 Installation
+To make CsvObject available in your project, you can run the following command.
+Make sure to run this command inside your project, when you're using go modules 😉
+
+>`go get github.com/anxp/csvobject`
