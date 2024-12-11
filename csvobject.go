@@ -3,6 +3,7 @@ package csvobject
 import (
 	"errors"
 	"fmt"
+	"math/big"
 	"reflect"
 	"strconv"
 	"strings"
@@ -185,9 +186,12 @@ func structureToCSVString(csvRowObject interface{}, parentFieldName string) (str
 			if err != nil {
 				return "", "", nil
 			}
-		} else if reflectedValue.Field(i).Kind().String() == reflectedValue.Field(i).Type().String() { // Only standard scalar types allowed (int, float, etc).
+		} else if reflectedValue.Field(i).Kind().String() == reflectedValue.Field(i).Type().String() || // Check for standard scalar types (int, float, etc)
+			(reflectedValue.Field(i).Kind().String() == "ptr" && reflectedValue.Field(i).Type().String() == "*big.Int") { // Check for big.Int type
+
 			valueStr = fmt.Sprintf("%v", reflectedValue.Field(i).Interface())
-			nameStr = nameStr + "|" + reflectedValue.Field(i).Kind().String()
+			nameStr = nameStr + "|" + reflectedValue.Field(i).Type().String() // Why Type()? For int and float type and kind are the same; but for big.Int type = "*big.Int", kind = "ptr"
+
 		} else {
 			return "", "", fmt.Errorf(
 				"only standard scalar types allowed, this one is not standard; Type = \"%s\", Kind = \"%s\"",
@@ -233,6 +237,14 @@ func convertStringToTypedValue(strValue string, desiredType string) (interface{}
 
 	case "bool":
 		result, err = strconv.ParseBool(strValue)
+
+	case "*big.Int":
+		ok := false
+
+		result, ok = big.NewInt(0).SetString(strValue, 10)
+		if !ok {
+			return nil, errors.New("failed to convert string to big.Int value")
+		}
 
 	default:
 		return nil, errors.New("unsupported value type: \"" + desiredType + "\"")

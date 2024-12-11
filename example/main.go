@@ -1,8 +1,9 @@
 package main
 
 import (
-	"csvobject"
 	"fmt"
+	"github.com/anxp/csvobject"
+	"math/big"
 )
 
 type Student struct {
@@ -18,6 +19,7 @@ type AdditionalData struct {
 	IsCovidVaccinated bool
 	HasDriveLicense   bool
 	IsPaidStudent     bool
+	Stipend           *big.Int // Yeah, our students are really rich
 }
 
 func main() {
@@ -28,13 +30,11 @@ func main() {
 		"Speciality|string," +
 		"AdditionalData.IsCovidVaccinated|bool," +
 		"AdditionalData.HasDriveLicense|bool," +
-		"AdditionalData.IsPaidStudent|bool" +
-		"\n" +
-		"1,John,Smith,2010,Physics,true,true,false" +
-		"\n" +
-		"2,Max,Mustermann,2011,Electronics,false,true,true" +
-		"\n" +
-		"3,John,Davis,2012,Mathematics,true,false,true"
+		"AdditionalData.IsPaidStudent|bool," +
+		"AdditionalData.Stipend|*big.Int\n" +
+		"1,John,Smith,2010,Physics,true,true,false,1000000000000000000\n" + // John have stipend 1 ETH in Wei (1 ETH = 1*10^18 Wei)
+		"2,Max,Mustermann,2011,Electronics,false,true,true,2000000000000000000\n" + // Max have stipend 2 ETH in Wei
+		"3,Peter,Davis,2012,Mathematics,true,false,true,3000000000000000000" // Peter have stipend 3 ETH in Wei
 
 	tmpStudents, err := csvobject.ImportRawCSV(Student{}, rawCsvData)
 
